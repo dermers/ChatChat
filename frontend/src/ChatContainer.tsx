@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Paper, TextField, Typography } from "@material-ui/core";
 import socket from "./socket";
 
@@ -9,9 +9,11 @@ const messageHTMLList = (msgs: string[]): React.ReactElement[] => {
 const ChatContainer: React.FC = () => {
   const [messageList, setMessageList] = useState<string[]>([]);
   const [text, setText] = useState<string>("");
-
-  socket.on('chat_message', (data: string) => {
-    setMessageList([...messageList, data]);
+  
+  useEffect(()=>{
+    socket.on('chat_message', (data: string) => {
+      setMessageList([...messageList, data]);
+    });
   });
 
   return (

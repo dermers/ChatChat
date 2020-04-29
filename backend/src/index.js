@@ -5,21 +5,23 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
 app.get('/', (req, res) => {
-    res.send('Hello world!');
+     res.send('Server Running!');
 });
 
 io.sockets.on('connection', (socket) => {
+    let room = "ROOM"; // TODO some existing / new and random room
+    socket.join(room);
     socket.on('username', (username) => {
         socket.username = username;
-        io.emit('is_online', socket.username + ' join the chat..');
+        io.to(room).emit('is_online', socket.username + ' join the chat..');
     });
 
     socket.on('disconnect', () => {
-        io.emit('is_online', socket.username + ' left the chat..');
+        io.to(room).emit('is_online', socket.username + ' left the chat..');
     })
 
     socket.on('chat_message', (message) => {
-        io.emit('chat_message', socket.username + ':' + message);
+        io.to(room).emit('chat_message', socket.username + ': ' + message);
     });
 });
 
